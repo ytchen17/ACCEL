@@ -1,1 +1,2 @@
-checkpoint
+model_checkpoint_path: "test_54_acc_0.9620-54"
+all_model_checkpoint_paths: "test_54_acc_0.9620-54"
