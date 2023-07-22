@@ -8,7 +8,7 @@ We use Python 3.5.2 and Tensorflow 1.14.0. For detailed environment configuratio
 
 ### Installation guide
 1) The installation of Tensorflow in Python environment can be refenced to the official website of Tensorflow: https://www.tensorflow.org/install/.
-2) The dependent packages in the environment.txt file can be installed from PyPi:
+2) The dependent packages in the './environment.txt' file can be installed from PyPi:
 ```
 pip install -r environment.txt
 ```
