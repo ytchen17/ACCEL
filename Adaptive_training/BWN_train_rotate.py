@@ -32,15 +32,14 @@ lr_decay_rate = 0.9
 
 BATCH_SIZE = 100
 
-onn_out_type = 'shiftRight_phaseNoise_0.26pi_rotate-5'
+onn_out_type = 'rotate-5'
 parameter_name =  onn_out_type + '_start-lr_' + str(start_lr) + '_step_' + str(lr_decay_step) + '_rate_' + str(lr_decay_rate)
 
 
 sess = tf.InteractiveSession()
 ckpt_dir = './ckpt_bwn/'
-# ckpt_restore_dir = './ckpt/bwn_noise_0_onn-noise_0_bias_1.0_GPU_0/'
-ckpt_restore_dir = './ckpt_bwn/shiftRight_phaseNoise_0.26pi_start-lr_0.02_step_1200_rate_0.9/'
-restore = True
+ckpt_restore_dir = './ckpt_bwn/'
+restore = False
 Train = True
 global_steps = tf.Variable(0,trainable=False)
 
@@ -79,8 +78,6 @@ mnist_data = input_data.read_data_sets('MNIST_data', one_hot=True)
 num_class = 10
 
 # data
-#data_dict = h5py.File("./onn_output/onn_output_data_" + str(args.bias) + ".mat", 'r')
-
 
 data_dict = sio.loadmat("./onn_output/onn_output_" + onn_out_type +".mat")
 train_data = np.array(data_dict["onn_output_train"]).astype(np.float32)
@@ -102,7 +99,6 @@ x = tf.placeholder("float", shape=[None, 1024]) #img,resized to 1024
 y_ = tf.placeholder("float", shape=[None, 10]) #label
 k = tf.compat.v1.placeholder("float")
 
-# x_input = tf.nn.l2_normalize(x, dim=1)
 x_input = x
 
 x_input = x_input * args.bias
@@ -110,9 +106,8 @@ x_input = tf.add(x_input, tf.random_normal(shape=(BATCH_SIZE, 32*32), mean=0.0, 
 x_input = tf.nn.relu(x_input)
 
 
-W_fc1 = weight_variable([1024, 16])
-#W_fc1 = tf.clip_by_value(W_fc1,-1.5,1.5)
-W_fc1 = tf.clip_by_value(W_fc1, -5, 5)
+W_fc1 = weight_variable([1024, 10])
+W_fc1 = tf.clip_by_value(W_fc1,-1.5,1.5)
 bin_W_fc1 = binarize(W_fc1)
 #bin_W_fc1 = sigmoid_binarize(W_fc1, k)
 bin_W_fc1_test = binarize(W_fc1)
@@ -121,8 +116,8 @@ h_fc1 = tf.matmul(x_input, bin_W_fc1)
 h_fc1_test = tf.matmul(x_input, bin_W_fc1_test)
 
 
-h_fc1 = tf.add(h_fc1, tf.random_normal(shape=(BATCH_SIZE, 16), mean=0.0, stddev = args.bwn_noise))
-h_fc1_test = tf.add(h_fc1_test, tf.random_normal(shape=(BATCH_SIZE, 16), mean=0.0, stddev = args.bwn_noise))
+h_fc1 = tf.add(h_fc1, tf.random_normal(shape=(BATCH_SIZE, 10), mean=0.0, stddev = args.bwn_noise))
+h_fc1_test = tf.add(h_fc1_test, tf.random_normal(shape=(BATCH_SIZE, 10), mean=0.0, stddev = args.bwn_noise))
 
 h_fc1 = h_fc1[:,0:10]
 h_fc1_test = h_fc1_test[:,0:10]
@@ -141,19 +136,15 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 saver = tf.train.Saver(max_to_keep=1)
 
 sess.run(tf.global_variables_initializer())
-#save_path = saver.save(sess,"./model.ckpt")
+
 if restore==True:
   ckpt_model = tf.train.latest_checkpoint(ckpt_restore_dir)
   saver.restore(sess, ckpt_model)
   print ('Model restore done!')
 
-# global_steps = tf.Variable(0,trainable=False)
-op1 =tf.assign(global_steps, 0)
-sess.run(op1)
-
 
 acc_max = 0.0
-acc_log = np.zeros((91,1))
+acc_log = np.zeros((201,1))
 
 count_num = 0
 test_batch_num = int(1000 / BATCH_SIZE)
@@ -174,7 +165,7 @@ print ('acc_max:', acc_max, "\t epoch:", -1)
 acc_log[0] = test_accuracy
 
 if Train==True:
-  for i in range(90):
+  for i in range(200):
     if i < 20:
       coef_tmp = 1
     elif i < 40:
