@@ -1,1 +1,2 @@
-c
+model_checkpoint_path: "test_103_acc_0.9610-103"
+all_model_checkpoint_paths: "test_103_acc_0.9610-103"
