@@ -4,7 +4,7 @@
 ACCEL is an all-analog chip able to process high-performance image classification and time-lapse tasks. In order to tackle the challenge of sensitivity to the system errors induced by inevitable manufacturing defects and misalignment during packaging, ACCEL adopts adaptive training method to fine-tune the electronic analog computing (EAC) part with back propagation based on the intermediate optical analog computing (OAC) results captured by the photodiode array. The relevant codes are available in ‘./Adaptive_training/’ .
 
 ### Environment
-We use Python 3.5.2 and Tensorflow 1.14.0. For detailed environment configuration, please refer to the environment.txt.
+We use Python 3.5.2 and Tensorflow 1.14.0. For detailed environment configuration, please refer to './environment.txt'.
 
 ### Installation guide
 1) The installation of Tensorflow in Python environment can be refenced to the official website of Tensorflow: https://www.tensorflow.org/install/.
