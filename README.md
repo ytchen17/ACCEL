@@ -1,4 +1,4 @@
-# ACCEL (Analog Computing chip Combining Electronics and Light)
+# ACCEL (All-analog Chip Combining Electronics and Light)
 
 ### Overview
 ACCEL is an all-analog chip able to process high-performance image classification and time-lapse tasks. In order to tackle the challenge of sensitivity to the system errors induced by inevitable manufacturing defects and misalignment during packaging, ACCEL adopts adaptive training method to fine-tune the electronic analog computing (EAC) part with back propagation based on the intermediate optical analog computing (OAC) results captured by the photodiode array. The relevant codes are available in ‘./Adaptive_training/’ .
